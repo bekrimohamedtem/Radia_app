@@ -1,88 +1,84 @@
 "use client";
 import { useRouter } from "next/navigation";
-import useFormStore from "@/components/useFormStore"; // adapte le chemin si nécessaire
-import { useState } from "react";
+import useQpStore from "../../components/useQpStore"; // adapte le chemin si besoin
 
 const Page = () => {
-	const router = useRouter();
+  const router = useRouter();
 
-	const name = useFormStore((state) => state.name);
-	const number = useFormStore((state) => state.number);
-	const address = useFormStore((state) => state.address);
+  // Récupère les valeurs du store
+  const quantity = useQpStore((state) => state.quantity);
+  const price = useQpStore((state) => state.price);
+  const setQuantity = useQpStore((state) => state.setQuantity);
 
-	const setName = useFormStore((state) => state.setName);
-	const setNumber = useFormStore((state) => state.setNumber);
-	const setAddress = useFormStore((state) => state.setAddress);
-	const validate = useFormStore((state) => state.validate);
+  // Fonctions pour modifier la quantité
+  const increase = () => setQuantity(quantity + 1);
+  const decrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
-	const [errors, setErrors] = useState([]);
+  return (
+    <div className="w-full h-full lg:max-w-6xl lg:mx-auto">
+      {/* Header / logo */}
+      <div className="flex flex-col items-center lg:mb-8">
+        <img
+          src="../LOGO.svg"
+          className="w-[80%] h-[100px] lg:w-[60%] lg:h-[120px]"
+          alt="LogoPage"
+        />
+        <p className="italianno-regular text-[#7B3F00] text-2xl lg:text-3xl">
+          Natural Rhythm In Every Bite
+        </p>
+      </div>
 
-	const handleSubmit = () => {
-		const validationErrors = validate();
-		if (validationErrors.length > 0) {
-			setErrors(validationErrors);
-			return;
-		}
+      {/* Image principale */}
+      <div className="mt-6 ml-5 lg:ml-0 lg:flex lg:justify-center lg:mt-8">
+        <div className="rounded-2xl lg:h-80 overflow-hidden h-50 w-45 lg:w-[600px] lg:h-[400px]">
+          <img
+            src="../honey.jpg"
+            className="w-full h-full object-cover transform transition-transform duration-500 hover:scale-110"
+            alt="Velvet Gold"
+          />
+        </div>
+      </div>
 
-		// Tout est OK, redirection vers la page de confirmation
-		router.push("/velvethoney/form/confirmation");
-	};
+      {/* Petites images */}
+      <div className="flex ml-5 mt-2 gap-2 lg:ml-0 lg:justify-center lg:mt-4 lg:gap-4">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="rounded-2xl lg:h-80 overflow-hidden h-20 w-15 border lg:w-[180px] lg:h-[120px]"
+          >
+            <img
+              src="../honey.jpg"
+              className="w-full h-full object-cover transform transition-transform duration-500 hover:scale-110"
+              alt="Velvet Gold"
+            />
+          </div>
+        ))}
+      </div>
 
-	return (
-		<div className="w-full h-full">
-			<div className="flex flex-col items-center">
-				<img src="../LOGO.svg" className="w-[80%] h-[100px]" alt="LogoPage" />
-				<p className="italianno-regular mb-5 text-[#7B3F00] text-2xl">
-					Natural Rhythm In Every Bite
-				</p>
-			</div>
+      {/* Quantité et prix */}
+      <div className="flex justify-between mx-15 mt-3 mr-20 font-semibold items-center lg:max-w-2xl lg:mx-auto lg:mt-6 lg:text-lg">
+        <div className="quantity flex items-center gap-2">
+          Quantity
+          <button className="cursor-pointer pl-0.5 rounded" onClick={decrease}>
+            -
+          </button>
+          <span>{quantity}</span>
+          <button className="cursor-pointer pl-0.5 rounded" onClick={increase}>
+            +
+          </button>
+        </div>
+        <div className="price">Price: {price} DA</div>
+      </div>
 
-			<div className="w-fit ml-7 md:mx-auto">
-				<h1 className="text-3xl font-semibold mb-5">Information</h1>
-
-				{/* Affichage des erreurs */}
-				{errors.length > 0 && (
-					<div className="mb-3 text-red-600">
-						{errors.map((err, i) => (
-							<p key={i}>{err}</p>
-						))}
-					</div>
-				)}
-
-				{/* Champs du formulaire */}
-				<input
-					type="text"
-					placeholder="Enter your name"
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-					className="block bg-gray-300 py-1 focus:outline-none border rounded-md mb-3 pr-25 pl-3 text-black"
-				/>
-
-				<input
-					type="text"
-					placeholder="Enter your number"
-					value={number}
-					onChange={(e) => setNumber(e.target.value)}
-					className="block bg-gray-300 py-1 focus:outline-none border rounded-md mb-3 pr-25 pl-3 text-black"
-				/>
-
-				<input
-					type="text"
-					placeholder="Enter your address"
-					value={address}
-					onChange={(e) => setAddress(e.target.value)}
-					className="block bg-gray-300 py-1 focus:outline-none border rounded-md mb-3 pr-25 pl-3 text-black"
-				/>
-
-				<button
-					className="rounded-md hover:bg-[#7b40009c] cursor-pointer border py-0.5 px-10 bg-[#7B3F0078]"
-					onClick={handleSubmit}
-				>
-					Valid
-				</button>
-			</div>
-		</div>
-	);
+      {/* Bouton commander */}
+      <button
+        className="bg-[#7B3F00]/[0.5] py-1.5 cursor-pointer w-65 border rounded-md mt-5 mx-auto block lg:w-80 lg:py-2 lg:text-lg lg:mt-8"
+        onClick={() => router.push("velvethoney/form")}
+      >
+        Commander
+      </button>
+    </div>
+  );
 };
 
 export default Page;
